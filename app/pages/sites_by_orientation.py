@@ -20,7 +20,7 @@ def compute_distance(lat, lon):
 
 # Load data
 df = px.data.wind()
-sites = pd.read_csv('data/ffvl_site.csv')
+sites = pd.read_csv('app/data/ffvl_site.csv')
 sites = sites[(sites['site_type']=='vol') & (sites['site_sous_type']=='Décollage')& (sites['site_sous_type']=='Décollage')].sort_values(by='nom',ascending=True)
 sites['distance_from_Paris']=sites.apply(lambda row: compute_distance(row['lat'], row['lon']), axis=1)
 max_distance = st.slider('Maximum distance from Paris as a crow flies(km)', min_value=0, max_value=1000, value=100)
