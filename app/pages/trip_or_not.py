@@ -64,7 +64,7 @@ def get_wind_direction_emoji(degrees):
     
 
 # Load the FFVL sites dataset
-sites = pd.read_csv('ffvl_site.csv')
+sites = pd.read_csv('app/data/ffvl_site.csv')
 sites = sites[(sites['site_type']=='vol') & (sites['site_sous_type']=='Décollage')& (sites['site_sous_type']=='Décollage')].sort_values(by='nom',ascending=True)
 
 # Rename columns for consistency
