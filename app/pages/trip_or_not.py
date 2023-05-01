@@ -6,7 +6,7 @@ import datetime
 
 # Set up API keys
 OPENWEATHERMAP_API_KEY = '93d10193a47c250d1fc0c68b79fa0046'
-GOOGLE_MAPS_API_KEY = 'AIzaSyCr6_eqW32A52hYTIlJ0cptG8avoK6pkLg'
+GOOGLE_MAPS_API_KEY = '...'
 
 def get_weather_emoji(description: str) -> str:
     """
