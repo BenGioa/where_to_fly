@@ -1,6 +1,8 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+from streamlit_folium import folium_static
+import folium
 
 from math import radians, sin, cos, sqrt, atan2
 
@@ -20,7 +22,7 @@ def compute_distance(lat, lon):
 
 # Load data
 df = px.data.wind()
-sites = pd.read_csv('app/data/ffvl_site.csv')
+sites = pd.read_csv(r'data/ffvl_site.csv')
 sites = sites[(sites['site_type']=='vol') & (sites['site_sous_type']=='Décollage')& (sites['site_sous_type']=='Décollage')].sort_values(by='nom',ascending=True)
 sites['distance_from_Paris']=sites.apply(lambda row: compute_distance(row['lat'], row['lon']), axis=1)
 max_distance = st.slider('Maximum distance from Paris as a crow flies(km)', min_value=0, max_value=1000, value=100)
@@ -56,9 +58,38 @@ st.plotly_chart(fig)
 
 # Add Streamlit table
 st.title('Site Data')
-st.write(sites)
+site_data = sites[['nom', 'sous_nom', 'cp', 'ville', 'alt',
+       'acces', 'trajet_parcking', 'trajet_attero_deco', 'handi'
+       , 'vent_favo', 'vent_defavo', 'conditions_ideales',
+       'balise', 'webcam', 'signaletique', 'description', 'restrictions',
+       'reg_aerienne', 'dangers', 'date_modification','distance_from_Paris']]
+sites_data = site_data.drop_duplicates(subset=['nom', 'sous_nom', 'cp', 'ville', 'alt',
+       'acces', 'trajet_parcking', 'trajet_attero_deco', 'handi'
+       , 'vent_favo', 'vent_defavo', 'conditions_ideales',
+       'balise', 'webcam', 'signaletique', 'description', 'restrictions',
+       'reg_aerienne', 'dangers', 'date_modification','distance_from_Paris'])
+st.dataframe(sites_data)
 
 
 # Add Streamlit map
 st.title('Site Locations')
-st.map(sites[['lat', 'lon']])
+#st.map(sites[['lat', 'lon']])
+
+m = folium.Map(location=[46.1853369, 5.570780999999999], zoom_start=4)
+
+for index, row in sites.iterrows():
+    html = """{}<br>
+    <sub><b></b> <br>
+    {}</sub><br>
+    <sub><b>Vents favorables</b> <br>
+    {}</sub>
+    """.format(row['nom'],str(row['sous_nom']),str(row['vent_favo']))
+
+
+    folium.Marker(
+        location=[row['lat'], row['lon']],
+        popup=html
+    ).add_to(m)
+
+# call to render Folium map in Streamlit
+folium_static(m)
